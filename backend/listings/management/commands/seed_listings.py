@@ -4,11 +4,11 @@ from listings.models import Listing
 
 
 CATEGORY_IMAGES = {
-    'Books': '/images/books.svg',
-    'Electronics': '/images/electronics.svg',
-    'Hostel Essentials': '/images/hostel-essentials.svg',
-    'Cycles': '/images/cycles.svg',
-    'Sports': '/images/sports.svg',
+    'Books': '/images/books.jpg',
+    'Electronics': '/images/electronics.jpg',
+    'Hostel Essentials': '/images/hostel-essentials.jpg',
+    'Cycles': '/images/cycles.jpg',
+    'Sports': '/images/sports.jpg',
 }
 
 

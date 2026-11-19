@@ -7,11 +7,11 @@ import './App.css'
 const categories = ['Books', 'Electronics', 'Hostel Essentials', 'Cycles', 'Sports']
 const hostels = ['Hostel A', 'Hostel B', 'Hostel C', 'Hostel D']
 const categoryImage = category => ({
-  Books: '/images/books.svg',
-  Electronics: '/images/electronics.svg',
-  'Hostel Essentials': '/images/hostel-essentials.svg',
-  Cycles: '/images/cycles.svg',
-  Sports: '/images/sports.svg',
+  Books: '/images/books.jpg',
+  Electronics: '/images/electronics.jpg',
+  'Hostel Essentials': '/images/hostel-essentials.jpg',
+  Cycles: '/images/cycles.jpg',
+  Sports: '/images/sports.jpg',
 }[category] || '/placeholder.svg')
 const showCategoryImage = category => e => {
   const fallback = categoryImage(category)
