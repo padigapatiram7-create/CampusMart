@@ -46,7 +46,7 @@ class Command(BaseCommand):
                     negotiable=i % 3 != 0,
                     category=category,
                     price=150 + i * 85 + (index % 7) * 25,
-                    imageUrl=f'https://picsum.photos/seed/listing{index}/600/600',
+                    imageUrl='/placeholder.svg',
                     rating=round(3.5 + (i % 5) * 0.25, 1),
                     total_reviews=10 + i * 3,
                     availability='Available',

@@ -9,7 +9,7 @@ class Listing(models.Model):
     negotiable = models.BooleanField(default=False)
     category = models.CharField(max_length=30, choices=(('Books', 'Books'), ('Electronics', 'Electronics'), ('Hostel Essentials', 'Hostel Essentials'), ('Cycles', 'Cycles'), ('Sports', 'Sports')))
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    imageUrl = models.URLField(max_length=500)
+    imageUrl = models.CharField(max_length=3_000_000)
     rating = models.FloatField(default=4.0)
     total_reviews = models.PositiveIntegerField(default=0)
     availability = models.CharField(max_length=20, default='Available')
