@@ -3,12 +3,23 @@ from django.contrib.auth import get_user_model
 from listings.models import Listing
 
 
-CATEGORY_IMAGES = {
-    'Books': '/images/books.jpg',
-    'Electronics': '/images/electronics.jpg',
-    'Hostel Essentials': '/images/hostel-essentials.jpg',
-    'Cycles': '/images/cycles.jpg',
-    'Sports': '/images/sports.jpg',
+PRODUCT_IMAGES = {
+    'Engineering Mathematics Textbook Set': '/images/books-engineering.jpg',
+    'Data Structures Handbook': '/images/books-data-structures.jpg',
+    'Modern Physics Notes': '/images/books-physics.jpg',
+    'Economics for Beginners': '/images/books-economics.jpg',
+    'Scientific Calculator': '/images/electronics-calculator.jpg',
+    'Wireless Earbuds': '/images/electronics-earbuds.jpg',
+    'Laptop Stand': '/images/electronics-laptop-stand.jpg',
+    'Desk LED Lamp': '/images/electronics-desk-lamp.jpg',
+    'Study Table Lamp': '/images/hostel-study-lamp.jpg',
+    'Laundry Bag': '/images/hostel-laundry-bag.jpg',
+    'Compact Iron': '/images/hostel-iron.jpg',
+    'Water Kettle': '/images/hostel-kettle.jpg',
+    'Campus Bicycle': '/images/cycles-city-bike.jpg',
+    'Foldable Bicycle': '/images/cycles-folding-bike.jpg',
+    'Bicycle Helmet': '/images/cycles-helmet.jpg',
+    'Cycling Pump': '/images/cycles-pump.jpg',
 }
 
 
@@ -55,7 +66,7 @@ class Command(BaseCommand):
                     negotiable=i % 3 != 0,
                     category=category,
                     price=150 + i * 85 + (index % 7) * 25,
-                    imageUrl=CATEGORY_IMAGES[category],
+                    imageUrl=PRODUCT_IMAGES.get(title_base, '/images/sports.jpg'),
                     rating=round(3.5 + (i % 5) * 0.25, 1),
                     total_reviews=10 + i * 3,
                     availability='Available',

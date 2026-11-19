@@ -6,15 +6,34 @@ import './App.css'
 
 const categories = ['Books', 'Electronics', 'Hostel Essentials', 'Cycles', 'Sports']
 const hostels = ['Hostel A', 'Hostel B', 'Hostel C', 'Hostel D']
+const productImages = {
+  'Engineering Mathematics Textbook Set': '/images/books-engineering.jpg',
+  'Data Structures Handbook': '/images/books-data-structures.jpg',
+  'Modern Physics Notes': '/images/books-physics.jpg',
+  'Economics for Beginners': '/images/books-economics.jpg',
+  'Scientific Calculator': '/images/electronics-calculator.jpg',
+  'Wireless Earbuds': '/images/electronics-earbuds.jpg',
+  'Laptop Stand': '/images/electronics-laptop-stand.jpg',
+  'Desk LED Lamp': '/images/electronics-desk-lamp.jpg',
+  'Study Table Lamp': '/images/hostel-study-lamp.jpg',
+  'Laundry Bag': '/images/hostel-laundry-bag.jpg',
+  'Compact Iron': '/images/hostel-iron.jpg',
+  'Water Kettle': '/images/hostel-kettle.jpg',
+  'Campus Bicycle': '/images/cycles-city-bike.jpg',
+  'Foldable Bicycle': '/images/cycles-folding-bike.jpg',
+  'Bicycle Helmet': '/images/cycles-helmet.jpg',
+  'Cycling Pump': '/images/cycles-pump.jpg',
+}
 const categoryImage = category => ({
-  Books: '/images/books.jpg',
-  Electronics: '/images/electronics.jpg',
-  'Hostel Essentials': '/images/hostel-essentials.jpg',
-  Cycles: '/images/cycles.jpg',
+  Books: '/images/books-engineering.jpg',
+  Electronics: '/images/electronics-calculator.jpg',
+  'Hostel Essentials': '/images/hostel-study-lamp.jpg',
+  Cycles: '/images/cycles-city-bike.jpg',
   Sports: '/images/sports.jpg',
 }[category] || '/placeholder.svg')
-const showCategoryImage = category => e => {
-  const fallback = categoryImage(category)
+const listingImage = listing => productImages[Object.keys(productImages).find(title => listing.title.startsWith(title))] || categoryImage(listing.category)
+const showListingImageFallback = listing => e => {
+  const fallback = listingImage(listing)
   if (e.currentTarget.getAttribute('src') !== fallback) e.currentTarget.src = fallback
 }
 
@@ -53,7 +72,7 @@ function Header({ user, setUser }) {
 function ListingCard({ listing, onAdd }) {
   return <article className="listingCard">
     <Link to={`/listings/${listing.id}`} className="cardImage">
-      <img src={listing.imageUrl || categoryImage(listing.category)} alt={listing.title} onError={showCategoryImage(listing.category)} />
+      <img src={listing.imageUrl || listingImage(listing)} alt={listing.title} onError={showListingImageFallback(listing)} />
       {listing.is_senior_deal && <span className="seniorBadge">Senior deal</span>}
       <button className="heart" onClick={e => e.preventDefault()}><FiHeart /></button>
     </Link>
@@ -96,7 +115,7 @@ function ListingsPage({ user }) {
 
   return <main className="page">
     <section className="marketHero"><div><span className="eyebrow">Campus community marketplace</span><h1>Great finds, <em>close to home.</em></h1><p>Buy and sell essentials with students across campus.</p></div><div className="heroStats"><strong>{data.count}</strong><span>active listings</span></div></section>
-    {getAccessToken() ? senior.length > 0 && <section className="seniorStrip"><div><span>SENIOR-ONLY</span><b>Final-year clearance deals</b></div><div className="seniorRail">{senior.slice(0,4).map(l => <Link key={l.id} to={`/listings/${l.id}`}><img src={l.imageUrl || categoryImage(l.category)} alt="" onError={showCategoryImage(l.category)} /><span><b>{l.title}</b><strong>₹{Number(l.price).toLocaleString('en-IN')}</strong></span></Link>)}</div></section> : <section className="loginStrip"><b>Final-year clearance</b><span>Sign in to unlock Senior-Only Deals</span><Link to="/login">Sign in</Link></section>}
+    {getAccessToken() ? senior.length > 0 && <section className="seniorStrip"><div><span>SENIOR-ONLY</span><b>Final-year clearance deals</b></div><div className="seniorRail">{senior.slice(0,4).map(l => <Link key={l.id} to={`/listings/${l.id}`}><img src={l.imageUrl || listingImage(l)} alt="" onError={showListingImageFallback(l)} /><span><b>{l.title}</b><strong>₹{Number(l.price).toLocaleString('en-IN')}</strong></span></Link>)}</div></section> : <section className="loginStrip"><b>Final-year clearance</b><span>Sign in to unlock Senior-Only Deals</span><Link to="/login">Sign in</Link></section>}
     <section className="marketLayout">
       <aside className="filters"><h3>Filters</h3><form onSubmit={submit}><label>Search<input value={filters.search} onChange={e => setFilters(f => ({ ...f, search: e.target.value }))} placeholder="Title or hostel" /></label><button className="searchBtn" type="submit"><FiSearch /> Search</button></form>
         <label>Category<select value={filters.category} onChange={e => { setPage(1); setFilters(f => ({ ...f, category: e.target.value })) }}><option value="">All categories</option>{categories.map(c => <option key={c}>{c}</option>)}</select></label>
@@ -150,7 +169,7 @@ function DetailPage() {
   useEffect(() => { apiFetch(`/api/listings/${id}/`).then(setListing).catch(() => setListing(null)) }, [id])
   const add = async () => { if (!getAccessToken()) return alert('Sign in to add items to your cart'); await apiFetch('/api/cart/add/', { method: 'POST', body: { listing: id, quantity } }); alert('Added to cart') }
   if (!listing) return <main className="page"><div className="emptyState">Loading listing…</div></main>
-  return <main className="page detailPage"><div className="breadcrumbs">Marketplace / {listing.category}</div><section className="detailGrid"><div className="detailImage"><img src={listing.imageUrl || categoryImage(listing.category)} alt={listing.title} onError={showCategoryImage(listing.category)}/></div><div className="detailInfo"><span className="categoryPill">{listing.category}</span><h1>{listing.title}</h1><div className="detailRating">{listing.rating} ★ <span>{listing.total_reviews} reviews</span></div><div className="detailPrice">₹{Number(listing.price).toLocaleString('en-IN')} {listing.negotiable && <span>Negotiable</span>}</div><dl><div><dt>Hostel</dt><dd>{listing.hostel}</dd></div><div><dt>Condition</dt><dd>{listing.condition}</dd></div><div><dt>Availability</dt><dd className="available">{listing.availability}</dd></div></dl><p className="description">{listing.description}</p><div className="buyRow"><div className="quantity"><button onClick={() => setQuantity(q => Math.max(1,q-1))}><FiMinus/></button><span>{quantity}</span><button onClick={() => setQuantity(q => q+1)}><FiPlus/></button></div><button className="addCart" onClick={add}><FiShoppingBag /> Add to cart</button></div></div></section></main>
+  return <main className="page detailPage"><div className="breadcrumbs">Marketplace / {listing.category}</div><section className="detailGrid"><div className="detailImage"><img src={listing.imageUrl || listingImage(listing)} alt={listing.title} onError={showListingImageFallback(listing)}/></div><div className="detailInfo"><span className="categoryPill">{listing.category}</span><h1>{listing.title}</h1><div className="detailRating">{listing.rating} ★ <span>{listing.total_reviews} reviews</span></div><div className="detailPrice">₹{Number(listing.price).toLocaleString('en-IN')} {listing.negotiable && <span>Negotiable</span>}</div><dl><div><dt>Hostel</dt><dd>{listing.hostel}</dd></div><div><dt>Condition</dt><dd>{listing.condition}</dd></div><div><dt>Availability</dt><dd className="available">{listing.availability}</dd></div></dl><p className="description">{listing.description}</p><div className="buyRow"><div className="quantity"><button onClick={() => setQuantity(q => Math.max(1,q-1))}><FiMinus/></button><span>{quantity}</span><button onClick={() => setQuantity(q => q+1)}><FiPlus/></button></div><button className="addCart" onClick={add}><FiShoppingBag /> Add to cart</button></div></div></section></main>
 }
 
 function CartPage({ navigate }) {
@@ -205,7 +224,7 @@ function SellerPage() {
   const advance=async item=>{await apiFetch(`/api/seller/orders/?item=${item.id}`,{method:'PATCH'});load()}
   const save=async e=>{
     e.preventDefault()
-    const payload={...form,imageUrl:form.imageUrl||categoryImage(form.category)}
+    const payload={...form,imageUrl:form.imageUrl||listingImage(form)}
     if(editing)await apiFetch(`/api/seller/listings/${editing}/`,{method:'PATCH',body:payload})
     else await apiFetch('/api/seller/listings/',{method:'POST',body:payload})
     setEditing(null);setForm(blank);load()

@@ -9,7 +9,7 @@ CampusMart is a campus marketplace built with React and Django REST Framework.
 - Shopping cart and checkout
 - Student and seller order views
 - Seller listings and dashboard
-- Locally served category stock photos for demo listings (not exact item photos); sellers can upload listing images
+- Locally served, product-specific stock photos for demo listings; photo credits are in `frontend/public/images/ATTRIBUTION.md`
 
 ## Run locally
 
