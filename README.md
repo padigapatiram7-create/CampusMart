@@ -20,8 +20,11 @@ cd backend
 python -m pip install -r requirements.txt
 python manage.py migrate
 python manage.py seed_listings
+python manage.py createsuperuser
 python manage.py runserver
 ```
+
+Use the username and password you choose when prompted to sign in to Django Admin. The Priya and Arjun demo accounts are not admin accounts.
 
 ### Frontend
 
