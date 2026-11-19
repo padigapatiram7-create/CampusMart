@@ -6,8 +6,16 @@ import './App.css'
 
 const categories = ['Books', 'Electronics', 'Hostel Essentials', 'Cycles', 'Sports']
 const hostels = ['Hostel A', 'Hostel B', 'Hostel C', 'Hostel D']
-const showPlaceholder = e => {
-  if (!e.currentTarget.src.endsWith('/placeholder.svg')) e.currentTarget.src = '/placeholder.svg'
+const categoryImage = category => ({
+  Books: '/images/books.svg',
+  Electronics: '/images/electronics.svg',
+  'Hostel Essentials': '/images/hostel-essentials.svg',
+  Cycles: '/images/cycles.svg',
+  Sports: '/images/sports.svg',
+}[category] || '/placeholder.svg')
+const showCategoryImage = category => e => {
+  const fallback = categoryImage(category)
+  if (e.currentTarget.getAttribute('src') !== fallback) e.currentTarget.src = fallback
 }
 
 function useUser() {
@@ -45,7 +53,7 @@ function Header({ user, setUser }) {
 function ListingCard({ listing, onAdd }) {
   return <article className="listingCard">
     <Link to={`/listings/${listing.id}`} className="cardImage">
-      <img src={listing.imageUrl || '/placeholder.svg'} alt={listing.title} onError={showPlaceholder} />
+      <img src={listing.imageUrl || categoryImage(listing.category)} alt={listing.title} onError={showCategoryImage(listing.category)} />
       {listing.is_senior_deal && <span className="seniorBadge">Senior deal</span>}
       <button className="heart" onClick={e => e.preventDefault()}><FiHeart /></button>
     </Link>
@@ -88,7 +96,7 @@ function ListingsPage({ user }) {
 
   return <main className="page">
     <section className="marketHero"><div><span className="eyebrow">Campus community marketplace</span><h1>Great finds, <em>close to home.</em></h1><p>Buy and sell essentials with students across campus.</p></div><div className="heroStats"><strong>{data.count}</strong><span>active listings</span></div></section>
-    {getAccessToken() ? senior.length > 0 && <section className="seniorStrip"><div><span>SENIOR-ONLY</span><b>Final-year clearance deals</b></div><div className="seniorRail">{senior.slice(0,4).map(l => <Link key={l.id} to={`/listings/${l.id}`}><img src={l.imageUrl || '/placeholder.svg'} alt="" onError={showPlaceholder} /><span><b>{l.title}</b><strong>₹{Number(l.price).toLocaleString('en-IN')}</strong></span></Link>)}</div></section> : <section className="loginStrip"><b>Final-year clearance</b><span>Sign in to unlock Senior-Only Deals</span><Link to="/login">Sign in</Link></section>}
+    {getAccessToken() ? senior.length > 0 && <section className="seniorStrip"><div><span>SENIOR-ONLY</span><b>Final-year clearance deals</b></div><div className="seniorRail">{senior.slice(0,4).map(l => <Link key={l.id} to={`/listings/${l.id}`}><img src={l.imageUrl || categoryImage(l.category)} alt="" onError={showCategoryImage(l.category)} /><span><b>{l.title}</b><strong>₹{Number(l.price).toLocaleString('en-IN')}</strong></span></Link>)}</div></section> : <section className="loginStrip"><b>Final-year clearance</b><span>Sign in to unlock Senior-Only Deals</span><Link to="/login">Sign in</Link></section>}
     <section className="marketLayout">
       <aside className="filters"><h3>Filters</h3><form onSubmit={submit}><label>Search<input value={filters.search} onChange={e => setFilters(f => ({ ...f, search: e.target.value }))} placeholder="Title or hostel" /></label><button className="searchBtn" type="submit"><FiSearch /> Search</button></form>
         <label>Category<select value={filters.category} onChange={e => { setPage(1); setFilters(f => ({ ...f, category: e.target.value })) }}><option value="">All categories</option>{categories.map(c => <option key={c}>{c}</option>)}</select></label>
@@ -142,7 +150,7 @@ function DetailPage() {
   useEffect(() => { apiFetch(`/api/listings/${id}/`).then(setListing).catch(() => setListing(null)) }, [id])
   const add = async () => { if (!getAccessToken()) return alert('Sign in to add items to your cart'); await apiFetch('/api/cart/add/', { method: 'POST', body: { listing: id, quantity } }); alert('Added to cart') }
   if (!listing) return <main className="page"><div className="emptyState">Loading listing…</div></main>
-  return <main className="page detailPage"><div className="breadcrumbs">Marketplace / {listing.category}</div><section className="detailGrid"><div className="detailImage"><img src={listing.imageUrl || '/placeholder.svg'} alt={listing.title} onError={showPlaceholder}/></div><div className="detailInfo"><span className="categoryPill">{listing.category}</span><h1>{listing.title}</h1><div className="detailRating">{listing.rating} ★ <span>{listing.total_reviews} reviews</span></div><div className="detailPrice">₹{Number(listing.price).toLocaleString('en-IN')} {listing.negotiable && <span>Negotiable</span>}</div><dl><div><dt>Hostel</dt><dd>{listing.hostel}</dd></div><div><dt>Condition</dt><dd>{listing.condition}</dd></div><div><dt>Availability</dt><dd className="available">{listing.availability}</dd></div></dl><p className="description">{listing.description}</p><div className="buyRow"><div className="quantity"><button onClick={() => setQuantity(q => Math.max(1,q-1))}><FiMinus/></button><span>{quantity}</span><button onClick={() => setQuantity(q => q+1)}><FiPlus/></button></div><button className="addCart" onClick={add}><FiShoppingBag /> Add to cart</button></div></div></section></main>
+  return <main className="page detailPage"><div className="breadcrumbs">Marketplace / {listing.category}</div><section className="detailGrid"><div className="detailImage"><img src={listing.imageUrl || categoryImage(listing.category)} alt={listing.title} onError={showCategoryImage(listing.category)}/></div><div className="detailInfo"><span className="categoryPill">{listing.category}</span><h1>{listing.title}</h1><div className="detailRating">{listing.rating} ★ <span>{listing.total_reviews} reviews</span></div><div className="detailPrice">₹{Number(listing.price).toLocaleString('en-IN')} {listing.negotiable && <span>Negotiable</span>}</div><dl><div><dt>Hostel</dt><dd>{listing.hostel}</dd></div><div><dt>Condition</dt><dd>{listing.condition}</dd></div><div><dt>Availability</dt><dd className="available">{listing.availability}</dd></div></dl><p className="description">{listing.description}</p><div className="buyRow"><div className="quantity"><button onClick={() => setQuantity(q => Math.max(1,q-1))}><FiMinus/></button><span>{quantity}</span><button onClick={() => setQuantity(q => q+1)}><FiPlus/></button></div><button className="addCart" onClick={add}><FiShoppingBag /> Add to cart</button></div></div></section></main>
 }
 
 function CartPage({ navigate }) {
@@ -181,7 +189,7 @@ function OrderDetailPage() {
   useEffect(() => { apiFetch(`/api/orders/${id}/`).then(setOrder) }, [id])
   const cancel = async () => { const updated = await apiFetch(`/api/orders/${id}/cancel/`, { method:'POST' }); setOrder(updated) }
   if (!order) return <main className="page">Loading…</main>
-  return <main className="page"><div className="sectionHeading"><span className="eyebrow">Order #{order.id}</span><h1>Order details</h1></div><div className="detailOrderGrid"><section className="checkoutForm">{order.items.map(i => <article className="orderItem" key={i.id}><img src={i.imageUrl || '/placeholder.svg'} alt="" onError={showPlaceholder}/><div><h3>{i.title}</h3><p>{i.condition} · Qty {i.quantity}</p></div><span className={`status ${i.status}`}>{i.status}</span></article>)}{order.can_cancel && <button className="dangerBtn" onClick={cancel}>Cancel order</button>}</section><aside className="orderSummary"><h3>Delivery details</h3><p><b>{order.address.full_name}</b><br/>{order.address.address}<br/>{order.address.city}, {order.address.state} {order.address.pincode}</p><hr/><div><span>Meetup point</span><strong>{order.meetup_point}</strong></div><div><span>Payment</span><strong>{order.payment_method}</strong></div><hr/><div className="summaryTotal"><span>Total</span><strong>₹{Number(order.total).toLocaleString('en-IN')}</strong></div></aside></div></main>
+  return <main className="page"><div className="sectionHeading"><span className="eyebrow">Order #{order.id}</span><h1>Order details</h1></div><div className="detailOrderGrid"><section className="checkoutForm">{order.items.map(i => <article className="orderItem" key={i.id}><img src={i.imageUrl || '/placeholder.svg'} alt="" onError={e => { if (!e.currentTarget.src.endsWith('/placeholder.svg')) e.currentTarget.src = '/placeholder.svg' }}/><div><h3>{i.title}</h3><p>{i.condition} · Qty {i.quantity}</p></div><span className={`status ${i.status}`}>{i.status}</span></article>)}{order.can_cancel && <button className="dangerBtn" onClick={cancel}>Cancel order</button>}</section><aside className="orderSummary"><h3>Delivery details</h3><p><b>{order.address.full_name}</b><br/>{order.address.address}<br/>{order.address.city}, {order.address.state} {order.address.pincode}</p><hr/><div><span>Meetup point</span><strong>{order.meetup_point}</strong></div><div><span>Payment</span><strong>{order.payment_method}</strong></div><hr/><div className="summaryTotal"><span>Total</span><strong>₹{Number(order.total).toLocaleString('en-IN')}</strong></div></aside></div></main>
 }
 
 function SellerPage() {
@@ -197,7 +205,7 @@ function SellerPage() {
   const advance=async item=>{await apiFetch(`/api/seller/orders/?item=${item.id}`,{method:'PATCH'});load()}
   const save=async e=>{
     e.preventDefault()
-    const payload={...form,imageUrl:form.imageUrl||'/placeholder.svg'}
+    const payload={...form,imageUrl:form.imageUrl||categoryImage(form.category)}
     if(editing)await apiFetch(`/api/seller/listings/${editing}/`,{method:'PATCH',body:payload})
     else await apiFetch('/api/seller/listings/',{method:'POST',body:payload})
     setEditing(null);setForm(blank);load()

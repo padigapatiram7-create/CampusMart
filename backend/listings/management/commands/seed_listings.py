@@ -3,6 +3,15 @@ from django.contrib.auth import get_user_model
 from listings.models import Listing
 
 
+CATEGORY_IMAGES = {
+    'Books': '/images/books.svg',
+    'Electronics': '/images/electronics.svg',
+    'Hostel Essentials': '/images/hostel-essentials.svg',
+    'Cycles': '/images/cycles.svg',
+    'Sports': '/images/sports.svg',
+}
+
+
 class Command(BaseCommand):
     help = 'Seed demo CampusMart accounts and listings'
 
@@ -46,7 +55,7 @@ class Command(BaseCommand):
                     negotiable=i % 3 != 0,
                     category=category,
                     price=150 + i * 85 + (index % 7) * 25,
-                    imageUrl='/placeholder.svg',
+                    imageUrl=CATEGORY_IMAGES[category],
                     rating=round(3.5 + (i % 5) * 0.25, 1),
                     total_reviews=10 + i * 3,
                     availability='Available',
