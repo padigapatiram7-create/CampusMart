@@ -30,6 +30,12 @@ npm install
 npm run dev
 ```
 
+## URLs
+
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Django API: [http://localhost:8000](http://localhost:8000)
+- Django Admin: [http://localhost:8000/admin](http://localhost:8000/admin)
+
 Demo accounts:
 
 - Seller: `Priya` / `secret123`
