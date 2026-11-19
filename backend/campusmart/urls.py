@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import RedirectView
 from rest_framework_simplejwt.views import TokenRefreshView
 from users.views import RegisterView, LogoutView, LoginView
 from listings.views import ListingListView, ListingDetailView
@@ -24,6 +25,7 @@ from orders.views import CheckoutView, OrderListView, OrderDetailView, CancelOrd
 from sellers.views import SellerListingListView, SellerListingDetailView, SellerOrdersView, DashboardView
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/api/listings/', permanent=False)),
     path('admin/', admin.site.urls),
     path('api/users/register/', RegisterView.as_view()),
     path('api/users/login/', LoginView.as_view()),

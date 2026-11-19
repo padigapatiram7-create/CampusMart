@@ -33,7 +33,8 @@ npm run dev
 ## URLs
 
 - Frontend: [http://localhost:3000](http://localhost:3000)
-- Django API: [http://localhost:8000](http://localhost:8000)
+- Django API: [http://localhost:8000](http://localhost:8000) (opens the listings API)
+- Listings endpoint: [http://localhost:8000/api/listings/](http://localhost:8000/api/listings/)
 - Django Admin: [http://localhost:8000/admin](http://localhost:8000/admin)
 
 Demo accounts:
