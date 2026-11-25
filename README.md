@@ -40,6 +40,14 @@ npm run dev
 - Django API: [http://localhost:8000](http://localhost:8000)
 - Django Admin: [http://localhost:8000/admin](http://localhost:8000/admin)
 
+## Deploy on Render
+
+1. Push this repository to GitHub.
+2. In Render, create a Blueprint from this repository and use `render.yaml` at the repository root.
+3. Apply the Blueprint. It creates the Django API, React static site, and PostgreSQL database.
+
+The demo site is seeded with the Seller and Student accounts listed below. Change their passwords before using the deployment beyond a demo.
+
 Demo accounts:
 
 - Seller: `Priya` / `secret123`

@@ -16,7 +16,7 @@ class ListingListView(generics.ListAPIView):
     ordering_fields = ('price', 'rating')
 
     def get_queryset(self):
-        qs = Listing.objects.all()
+        qs = Listing.objects.all().order_by('id')
         rating = self.request.query_params.get('rating')
         if rating:
             try:

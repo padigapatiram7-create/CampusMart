@@ -6,5 +6,6 @@ db.sqlite3
 venv/
 node_modules/
 dist/
+backend/staticfiles/
 *.log
 .DS_Store

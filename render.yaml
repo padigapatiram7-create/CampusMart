@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: campusmart-padi-2026-api
+    runtime: python
+    region: singapore
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate && python manage.py seed_listings --with-orders && gunicorn campusmart.wsgi:application --bind 0.0.0.0:$PORT
+    healthCheckPath: /api/listings/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "false"
+      - key: ALLOWED_HOSTS
+        value: campusmart-padi-2026-api.onrender.com,localhost,127.0.0.1
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://campusmart-padi-2026-web.onrender.com,http://localhost:3000,http://localhost:5173,http://127.0.0.1:5173
+      - key: DATABASE_URL
+        fromDatabase:
+          name: campusmart-padi-2026-db
+          property: connectionString
+
+  - type: web
+    name: campusmart-padi-2026-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://campusmart-padi-2026-api.onrender.com
+
+databases:
+  - name: campusmart-padi-2026-db
+    databaseName: campusmart
+    user: campusmart
+    region: singapore
+    plan: free

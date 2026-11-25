@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-export const BASE_URL = import.meta.env.VITE_API_BASE_URL
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:8000' : '')
 export const apiUrl = path => `${BASE_URL}${path}`
 const ACCESS_TOKEN_KEY = 'jwt_token'
 const REFRESH_TOKEN_KEY = 'refresh_token'
