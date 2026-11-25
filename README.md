@@ -44,7 +44,9 @@ npm run dev
 
 1. Push this repository to GitHub.
 2. In Render, create a Blueprint from this repository and use `render.yaml` at the repository root.
-3. Apply the Blueprint. It creates the Django API, React static site, and PostgreSQL database.
+3. Apply the Blueprint. It creates the Django API and React static site.
+
+The free deployment uses SQLite on Render's ephemeral filesystem because a Render account can have only one free PostgreSQL database. Database changes can be lost when the API service restarts or redeploys. Use PostgreSQL for persistent data before using this deployment beyond a demo.
 
 The demo site is seeded with the Seller and Student accounts listed below. Change their passwords before using the deployment beyond a demo.
 
